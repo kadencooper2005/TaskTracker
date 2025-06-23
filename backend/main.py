@@ -6,6 +6,9 @@ from routes import user, task
 from prometheus_fastapi_instrumentator import Instrumentator
 import logging
 import sys
+from dotenv import load_dotenv
+load_dotenv()
+
 
 # Basic logging setup to stdout with INFO level
 logging.basicConfig(
@@ -45,6 +48,16 @@ app.include_router(auth_router, prefix="/auth")
 app.include_router(user.router)
 app.include_router(router)
 app.include_router(task.router)
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3001"],  # or 3001, depending on Next.js dev port
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 # Add Prometheus metrics endpoint /metrics
 instrumentator = Instrumentator().instrument(app)

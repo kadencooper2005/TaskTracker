@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
-from database import Base
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func  # for automatic timestamp
+from database import Base
 
 class User(Base):
     __tablename__ = "users"
@@ -21,7 +22,6 @@ class Task(Base):
     description = Column(String)
     completed = Column(Boolean, default=False)
     owner_id = Column(Integer, ForeignKey("users.id"))
-
+    priority = Column(String, nullable=False, default="medium")  # add priority field
+    created_at = Column(DateTime(timezone=True), server_default=func.now())  # add created_at timestamp
     owner = relationship("User", back_populates="tasks")
-
-
