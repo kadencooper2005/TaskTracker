@@ -4,6 +4,8 @@ __pycache__/
 
 # Env & config
 .env
+venv/
+.env.*
 
 # Logs
 *.log
@@ -15,3 +17,11 @@ grafana-storage/
 
 # OS-specific
 .DS_Store
+
+# Node / React / Next.js
+node_modules/
+.next/
+out/
+dist/
+build/
+
