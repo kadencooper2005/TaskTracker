@@ -10,8 +10,3 @@ def read_current_user(current_user: User = Depends(get_current_user)):
         "username": current_user.username,
         "email": current_user.email
     }
-
-
-@router.get("/trigger-500")
-def trigger_500():
-    raise HTTPException(status_code=500, detail="This is a simulated 500 error")

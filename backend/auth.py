@@ -49,17 +49,6 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         raise credentials_exception
     return user
 
-# Optional: enforce role
-def require_role(required_role: str):
-    def role_checker(current_user: User = Depends(get_current_user)):
-        if current_user.role != required_role:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="User does not have the required permissions"
-            )
-        return current_user
-    return role_checker
-
 # ROUTES
 @router.post("/register")
 def register(user: UserCreate, db: Session = Depends(get_db)):

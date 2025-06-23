@@ -1,11 +1,10 @@
 from fastapi import FastAPI, Depends, APIRouter
-from auth import router as auth_router, get_current_user, require_role
+from auth import router as auth_router, get_current_user
 from database import engine
 from models import Base, User
 from routes import user, task
 from prometheus_fastapi_instrumentator import Instrumentator
 import logging
-import sys
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -33,11 +32,6 @@ def read_current_user(current_user: User = Depends(get_current_user)):
         "username": current_user.username,
         "email": current_user.email
     }
-
-@router.get("/admin")
-def admin_dashboard(current_user: User = Depends(require_role("admin"))):
-    logger.info(f"Admin dashboard accessed by: {current_user.username}")
-    return {"message": f"Welcome, {current_user.username}. This is the admin dashboard."}
 
 app = FastAPI()
 
