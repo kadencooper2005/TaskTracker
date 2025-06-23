@@ -95,14 +95,7 @@ export default function LoginPage() {
                   className="bg-black/50 border-purple-600/50 text-white placeholder:text-gray-400 focus:border-purple-400"
                 />
               </div>
-              <div className="flex items-center justify-between">
-                <Link
-                  href="/forgot-password"
-                  className="text-sm text-purple-300 hover:text-purple-200"
-                >
-                  Forgot password?
-                </Link>
-              </div>
+
               <Button
                 type="submit"
                 className="w-full bg-purple-600 hover:bg-purple-700 text-white"
