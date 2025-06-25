@@ -1,16 +1,22 @@
+version: "3.9"
+
 services:
   backend:
     build: .
     volumes:
       - ./backend:/app
-      - ./logs:/app/logs # Mount for log files (optional, if you want to persist logs)
+      - ./logs:/app/logs # Persist logs (optional)
     ports:
       - "8000:8000"
     depends_on:
       - redis
       - db
     environment:
-      - LOG_LEVEL=info
+      # Logging and database
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - DATABASE_URL=postgresql://user:password@db:5432/taskdb
+    networks:
+      - monitoring
 
   db:
     image: postgres:15
@@ -19,29 +25,37 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: taskdb
     ports:
-      - "5433:5432"
+      - "5433:5432" # 5433 is for connecting from your host (e.g. pgAdmin)
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - monitoring
 
   redis:
     image: redis:7-alpine
     ports:
       - "6379:6379"
+    networks:
+      - monitoring
 
   loki:
     image: grafana/loki:2.9.0
     ports:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - monitoring
 
   promtail:
     image: grafana/promtail:2.9.0
     volumes:
-      - ./logs:/var/log
+      - ./logs:/var/log # Matches backend log mount
       - ./promtail-config.yml:/etc/promtail/promtail-config.yml
     command: -config.file=/etc/promtail/promtail-config.yml
     depends_on:
       - loki
+    networks:
+      - monitoring
 
   prometheus:
     image: prom/prometheus:latest
@@ -51,6 +65,8 @@ services:
       - --config.file=/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
+    networks:
+      - monitoring
 
   grafana:
     image: grafana/grafana:latest
@@ -61,10 +77,12 @@ services:
     depends_on:
       - prometheus
       - loki
-
-networks:
-  monitoring:
+    networks:
+      - monitoring
 
 volumes:
   pgdata:
   grafana-storage:
+
+networks:
+  monitoring:
