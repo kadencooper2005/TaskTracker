@@ -2,6 +2,7 @@
 
 import type React from "react";
 
+// Importing components for UI elements
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,21 +17,25 @@ import Link from "next/link";
 import { useState } from "react";
 import { loginUser } from "@/lib/api";
 
+// LoginPage component definition
 export default function LoginPage() {
+  // State hooks for managing username, password, and loading state
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  // Function to handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
+      // Attempting to login user
       const response = await loginUser({ username, password });
 
       console.log("✅ Login successful:", response);
 
-      // Example: save token or session (you can customize this part)
+      // Example: save token or session
       localStorage.setItem("access_token", response.access_token);
 
       // Redirect after successful login
@@ -43,6 +48,7 @@ export default function LoginPage() {
     }
   };
 
+  // JSX for the LoginPage component
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-purple-900 to-black flex items-center justify-center px-4">
       <div className="w-full max-w-md">
