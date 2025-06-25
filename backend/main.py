@@ -5,7 +5,6 @@ from slowapi.errors import RateLimitExceeded
 from slowapi import _rate_limit_exceeded_handler
 from prometheus_fastapi_instrumentator import Instrumentator
 import logging
-import redis
 
 # 2. Internal app modules
 from rate_limit import limiter
@@ -68,3 +67,7 @@ app.add_middleware(
 instrumentator = Instrumentator().instrument(app)
 instrumentator.expose(app)
 logging.info("Startup complete. Metrics exposed")
+
+
+
+
