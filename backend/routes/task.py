@@ -12,11 +12,13 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/tasks", tags=["Tasks"])
 
+## GET route to landing page w/ rate limiting
 @router.get("/", response_model=List[TaskOut])
-@limiter.limit("30/minute")  # typo fixed from "minutes"
+@limiter.limit("30/minute")  
 def get_tasks(request: Request, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     return db.query(Task).filter(Task.owner_id == current_user.id).all()
 
+## POST operation for task w/ rate limiting 
 @router.post("/", response_model=TaskOut)
 @limiter.limit("10/minute")
 def create_task(request: Request, task: TaskCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
@@ -27,6 +29,7 @@ def create_task(request: Request, task: TaskCreate, db: Session = Depends(get_db
     db.refresh(new_task)
     return new_task
 
+## DELETE operation for task w/ rate limiting
 @router.delete("/{task_id}")
 @limiter.limit("20/minute")
 def delete_task(request: Request, task_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
@@ -38,6 +41,7 @@ def delete_task(request: Request, task_id: int, db: Session = Depends(get_db), c
     db.commit()
     return {"message": "Task deleted"}
 
+## PUT operation for task w/ rate limiting 
 @router.put("/{task_id}", response_model=TaskOut)
 @limiter.limit("20/minute")
 def update_task(
