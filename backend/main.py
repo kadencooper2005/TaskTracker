@@ -12,6 +12,7 @@ from auth import router as auth_router, get_current_user
 from database import engine
 from models import Base, User
 from routes import user, task
+import os
 
 app = FastAPI()
 
@@ -22,8 +23,13 @@ logger = logging.getLogger(__name__)
 
 
 # Basic logging setup to stdout with INFO level
+# Ensure logs/ exists in container
+os.makedirs("logs", exist_ok=True)
+open("logs/app.log", "a").close()  # Optional, ensures file exists
+
+# Logging config
 logging.basicConfig(
-    filename="logs/app.log",  # Must match promtail path
+    filename="logs/app.log",  # Must match Promtail mount path
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
