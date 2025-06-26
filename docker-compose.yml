@@ -47,6 +47,7 @@ services:
   promtail:
     image: grafana/promtail:2.9.0
     volumes:
+      - ./backend:/app
       - ./logs:/var/log # Matches backend log mount
       - ./promtail-config.yml:/etc/promtail/promtail-config.yml
     command: -config.file=/etc/promtail/promtail-config.yml
